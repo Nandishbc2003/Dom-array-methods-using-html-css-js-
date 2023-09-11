@@ -1,0 +1,239 @@
+<!DOCTYPE html> 
+ <html lang="en"> 
+  
+ <head> 
+     <meta charset="UTF-8" /> 
+     <meta name="viewport" content="width=device-width, initial-scale=1.0" /> 
+     <meta http-equiv="X-UA-Compatible" content="ie=edge" /> 
+     <link rel="stylesheet" href="style.css" /> 
+ <link href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet"> 
+     <title>DOM Array Methods</title> 
+ </head> 
+  
+ <body> 
+     <h1>DOM Array Methods</h1> 
+  
+     <div class="container"> 
+         <aside> 
+             <button id="add-user">Add User <i class="fa fa-user-plus" aria-hidden="true"></i> </button> 
+             <button id="double">Double the Money <i class="fa fa-money" aria-hidden="true"></i></button> 
+             <button id="show-millionaires">Show Only Millionaires 💵</button> 
+             <button id="sort">Sort by Richest <i class="fa fa-sort-amount-desc" aria-hidden="true"></i></button> 
+             <button id="calculate-wealth">Calculate Total Wealth 🧮</button> 
+         </aside> 
+  
+         <main id="main"> 
+             <h2><strong>Person</strong> Wealth</h2> 
+         </main> 
+     </div> 
+  
+     <script src="script.js"></script> 
+ </body> 
+  
+ </html><style type="text/css">@import url("https://fonts.googleapis.com/css2?family=Noto+Sans&display=swap"); 
+ 
+ * { 
+ box-sizing: border-box; 
+ font-family: "Noto Sans", sans-serif; 
+ } 
+ 
+ body { 
+ background-color: rgb(247, 230, 223); 
+ display: flex; 
+ flex-direction: column; 
+ align-items: center; 
+ min-height: 100vh; 
+ margin: 0; 
+ } 
+ 
+ .container { 
+ display: flex; 
+ padding: 20px; 
+ margin: 0 auto; 
+ max-width: 100%; 
+ width: 800px; 
+ } 
+ 
+ aside { 
+ padding: 10px 20px; 
+ width: 250px; 
+ border-right: 1px solid #111; 
+ } 
+ 
+ button { 
+ background-color: whitesmoke; 
+ border: solid 1px #111; 
+ cursor: pointer; 
+ border-radius: 7px; 
+ display: block; 
+ width: 100%; 
+ padding: 10px; 
+ margin-bottom: 2rem; 
+ font-weight: bold; 
+ font-size: 14px; 
+ } 
+ 
+ button:hover { 
+ background-color: #111; 
+ color: whitesmoke; 
+ } 
+ 
+ main { 
+ flex: 1; 
+ padding: 10px 20px; 
+ } 
+ 
+ h2 { 
+ border-bottom: 1px solid #111; 
+ padding-bottom: 10px; 
+ display: flex; 
+ justify-content: space-between; 
+ font-weight: 400; 
+ margin: 0 0 20px; 
+ } 
+ 
+ h3 { 
+ border-bottom: 1px solid #111; 
+ padding: 10px; 
+ display: flex; 
+ background-color: whitesmoke; 
+ justify-content: space-between; 
+ font-weight: 400; 
+ margin: 20 0 0px; 
+ } 
+ 
+ .person { 
+ display: flex; 
+ justify-content: space-between; 
+ font-size: 20px; 
+ margin-bottom: 10px; 
+ } 
+ 
+ h1 { 
+ margin-top: 2em; 
+ }</style><script type="text/javascript">const main = document.getElementById('main'); 
+ const addUserBtn = document.getElementById('add-user'); 
+ const doubleBtn = document.getElementById('double'); 
+ const showMillionairesBtn = document.getElementById('show-millionaires'); 
+ const sortBtn = document.getElementById('sort'); 
+ const calculateWealthBtn = document.getElementById('calculate-wealth'); 
+ 
+ 
+ let data = [] 
+ 
+ getRandomUser() 
+ getRandomUser() 
+ getRandomUser() 
+ getRandomUser() 
+ 
+ 
+ 
+ //fetching the API and adding money 
+ 
+ async function getRandomUser(){ 
+ 
+ const res = await fetch("https://randomuser.me/api") 
+ 
+ const data = await res.json() 
+ 
+ 
+ 
+ const user = data.results[0] 
+ 
+ const newUser = { 
+ name : `${user.name.first} ${user.name.last}`, 
+ money: Math.floor(Math.random()*1000000) 
+ } 
+ 
+ addData(newUser) 
+ } 
+ 
+ let calculateWealth = () =>{ 
+ const wealth = data.reduce((acc, user) => (acc += user.money), 0); 
+ 
+ const wealthElement = document.createElement('div'); 
+ wealthElement.innerHTML = `<h3>Total Wealth: <strong>${formatMoney( 
+ wealth 
+ )}</strong></h3>`; 
+ main.appendChild(wealthElement); 
+ } 
+ 
+ 
+ let  showMillionaires= () =>{ 
+ data = data.filter(user => user.money >= 1000000); 
+ 
+ updateDOM(); 
+ } 
+ 
+ 
+ 
+ 
+ let sortRichest = () => { 
+ data.sort((a,b) => b.money - a.money) 
+ updateDOM() 
+ } 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ let doubleMoney = () =>{ 
+ 
+ data= data.map((user)=>{ 
+ return { ...user, money: user.money*2} 
+ })  
+ 
+ updateDOM() 
+ } 
+ 
+ // add new obj to data array 
+ 
+ let addData = (obj) => { 
+ 
+ data.push(obj) 
+ 
+ updateDOM() 
+ } 
+ 
+ 
+ 
+ let updateDOM = ( providedData = data ) =>{ 
+ 
+ // clear the main div 
+ 
+ main.innerHTML = ` <h2><strong>Person</strong> Wealth</h2>` 
+ 
+ providedData.forEach( item => { 
+ 
+ const element = document.createElement('div') // literally creating an HTML element 
+ 
+ element.classList.add('person') //adding "person" as a class onto this 
+ 
+ element.innerHTML =  `<strong> ${item.name} </strong> 
+ ${formatMoney(item.money)}` 
+ 
+ main.appendChild(element) 
+ }) 
+ 
+ } 
+ 
+ 
+ 
+ // format no. as money 
+ 
+ let formatMoney = ( number ) =>'$' + number.toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,'); 
+ 
+ 
+ // event listeners 
+ 
+ addUserBtn.addEventListener("click", getRandomUser) 
+ 
+ doubleBtn.addEventListener("click", doubleMoney) 
+ 
+ sortBtn.addEventListener("click", sortRichest) 
+ 
+ showMillionairesBtn.addEventListener("click", showMillionaires) 
+ 
+ calculateWealthBtn.addEventListener("click", calculateWealth)</script>
